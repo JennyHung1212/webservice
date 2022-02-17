@@ -1,13 +1,14 @@
 package edu.neu.coe.csye6225.webapp.controllers;
 
 import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
-import edu.neu.coe.csye6225.webapp.models.UserModel;
+import edu.neu.coe.csye6225.webapp.models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -22,10 +23,10 @@ public class UserController {
     }
 
     @PostMapping("/v1/user")
-    public ResponseEntity createUser(@RequestBody UserModel user) {
+    public ResponseEntity createUser(@Valid @RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         try {
-            return new ResponseEntity<UserModel>(repository.save(user), HttpStatus.CREATED);
+            return new ResponseEntity<User>(repository.save(user), HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             System.out.println(e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/v1/user/self")
-    public UserModel getSelf(@RequestHeader("Authorization") String token) {
+    public User getSelf(@RequestHeader("Authorization") String token) {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
@@ -41,12 +42,12 @@ public class UserController {
     }
 
     @PutMapping("/v1/user/self")
-    public ResponseEntity updateSelf(@RequestHeader("Authorization") String token, @RequestBody UserModel user) {
+    public ResponseEntity updateSelf(@RequestHeader("Authorization") String token, @RequestBody User user) {
         try {
             String base64Credentials = token.substring("Basic".length()).trim();
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
             String username = credentials.split(":")[0];
-            UserModel updatedUser = repository.findByUsername(username);
+            User updatedUser = repository.findByUsername(username);
 
             updatedUser.updateUser(user.getFirstName(), user.getLastName(), passwordEncoder.encode(user.getPassword()));
             repository.save(updatedUser);
