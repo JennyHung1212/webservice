@@ -1,8 +1,8 @@
 package edu.neu.coe.csye6225.webapp.repositories;
 
-import edu.neu.coe.csye6225.webapp.models.UserModel;
+import edu.neu.coe.csye6225.webapp.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserModel, String> {
-    UserModel findByUsername(String username);
+public interface UserRepository extends JpaRepository<User, String> {
+    User findByUsername(String username);
 }
