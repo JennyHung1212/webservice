@@ -1,0 +1,42 @@
+{
+  "variables": {
+    "aws_region": "",
+    "aws_profile": "dev",
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "subnet_id": "",
+    "source_ami": "ami-033b95fb8079dc481",
+    "ssh_username": "ec2-user",
+    "security_group_id": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "profile": "{{user `aws_profile`}}",
+      "region": "{{user `aws_region`}}",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "subnet_id": "{{user `subnet_id`}}",
+      "security_group_id": "{{user `security_group_id`}}",
+      "instance_type": "t2.micro",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ami_name": "csye6225_{{timestamp}}",
+      "ami_description": "Linux AMI for CSYE 6225",
+      "ami_users": ["854350110591", "567984459938"]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum update -y",
+        "sudo yum install -y java-1.8.0-openjdk.x86_64"
+      ]
+    },
+    {
+      "type": "shell",
+      "script": "mysql.sh"
+    }
+  ]
+}

@@ -16,3 +16,27 @@ Clears the target directory and builds the project described by your Maven POM f
 ```bash
 ./mvnw clean install
 ```
+
+# Packer
+```bash
+cd src/main/java/edu/neu/coe/csye6225/webapp/ami/
+packer validate ami.json
+# for dev
+# set log mode to verbose
+export PACKER_LOG=1 && packer build -var-file='vars_dev.json' ami.json
+# for demo
+packer build -var-file='vars_demo.json' ami.json
+```
+```json
+"provisioners": [
+{
+"type": "shell",
+"inline": [
+"cloud-init status --wait",
+"sudo apt-get update",
+"sudo apt-get install openjdk-8-jre-headless maven -y"
+]
+}
+]
+"sudo yum install -y mysql-server"
+```
