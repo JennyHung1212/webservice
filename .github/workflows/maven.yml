@@ -77,7 +77,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Set AMI Directory
-        run: cd src/main/java/edu/neu/coe/csye6225/webapp/ami
+        run: echo $(pwd) && cd src/main/java/edu/neu/coe/csye6225/webapp/ami
       - name: Build AMI with Packer
         uses: hashicorp/packer-github-actions@master
         with:
