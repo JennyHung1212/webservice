@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>edu.neu.coe.csye6225</groupId>
-	<artifactId>webapp</artifactId>
+	<artifactId>webservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>webapp</name>
 	<description>CSYE6225 web service</description>
