@@ -57,6 +57,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: artifact
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Upload JAR to S3
         uses: medlypharmacy/s3-artifacts-action@master
         with:
