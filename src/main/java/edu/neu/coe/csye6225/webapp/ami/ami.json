@@ -36,15 +36,15 @@
     },
     {
       "type": "shell",
-      "script": "mysql.sh"
+      "script": "./src/main/java/edu/neu/coe/csye6225/webapp/ami/mysql.sh"
     },
     {
       "type": "shell",
-      "script": "app.sh"
+      "script": "./src/main/java/edu/neu/coe/csye6225/webapp/ami/app.sh"
     },
     {
       "type": "shell",
-      "script": "server.sh"
+      "script": "./src/main/java/edu/neu/coe/csye6225/webapp/ami/server.sh"
     }
   ]
 }
