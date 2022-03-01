@@ -76,12 +76,12 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Build AMI with Packer
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: build
-          arguments: "-var-file=./src/main/java/edu/neu/coe/csye6225/webapp/ami/vars_dev.json"
-          target: ./src/main/java/edu/neu/coe/csye6225/webapp/ami/ami.json
-        env:
-          PACKER_LOG: 1
+    - name: Build AMI with Packer
+      uses: hashicorp/packer-github-actions@master
+      with:
+        command: build
+        arguments: "-var-file=./src/main/java/edu/neu/coe/csye6225/webapp/ami/vars_dev.json"
+        target: ./src/main/java/edu/neu/coe/csye6225/webapp/ami/ami.json
+      env:
+        PACKER_LOG: 1
 
