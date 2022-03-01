@@ -9,7 +9,7 @@ on:
     branches: [ main ]
 jobs:
   test:
-    name: Unit Tests
+    name: Unit Tests & Validate Packer
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -27,6 +27,12 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
     - name: Run Tests with Maven
       run: mvn -B test --file pom.xml
+    - name: Validate Packer Template
+      uses: hashicorp/packer-github-actions@master
+      with:
+        command: validate
+        arguments: -syntax-only
+        target: ./src/main/java/edu/neu/coe/csye6225/webapp/ami/ami.json
   build:
     name: Build Artifact
     runs-on: ubuntu-latest
