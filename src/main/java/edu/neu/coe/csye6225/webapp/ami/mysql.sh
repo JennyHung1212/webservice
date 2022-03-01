@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sudo yum update -y
-sudo yum install -y java-1.8.0-openjdk.x86_64
 sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
 yes | sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm
