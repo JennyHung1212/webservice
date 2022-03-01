@@ -37,6 +37,14 @@
     {
       "type": "shell",
       "script": "mysql.sh"
+    },
+    {
+      "type": "shell",
+      "script": "app.sh"
+    },
+    {
+      "type": "shell",
+      "script": "server.sh"
     }
   ]
 }
