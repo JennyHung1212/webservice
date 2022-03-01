@@ -76,6 +76,8 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: PWD
+        run: ls -R
       - name: Build AMI with Packer
         uses: hashicorp/packer-github-actions@master
         with:
