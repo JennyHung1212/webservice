@@ -6,7 +6,8 @@ on:
     branches:
       - 'feature/**'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 jobs:
   test:
     name: Unit Tests & Validate Packer
