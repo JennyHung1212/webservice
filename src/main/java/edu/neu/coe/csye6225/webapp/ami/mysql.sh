@@ -17,3 +17,4 @@ done
 default_password=${strarr[1]}
 echo "$default_password"
 sudo mysqladmin -u root -p"$default_password" password "Password**123"
+sudo mysql -u root -p"Password**123" -e "create database CSYE6225";

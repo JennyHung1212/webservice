@@ -76,5 +76,11 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Set AMI Directory
+        run: cd src/main/java/edu/neu/coe/csye6225/webapp/ami
       - name: Build AMI with Packer
-        run: echo 'build ami with packer'
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          arguments: "-var-file=vars_dev.json"
+          target: ami.json
