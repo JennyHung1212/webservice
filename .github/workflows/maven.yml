@@ -82,7 +82,7 @@ jobs:
           command: build
           arguments: "-var-file=vars_dev.json"
           target: ami.json
-          working_directory: ./src/main/java/edu/neu/coe/csye6225/webapp/ami
+          working_directory: ../../src/main/java/edu/neu/coe/csye6225/webapp/ami/
         env:
           PACKER_LOG: 1
 
