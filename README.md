@@ -25,5 +25,5 @@ packer validate ami.json
 # set log mode to verbose
 export PACKER_LOG=1 && packer build -var-file='vars_dev.json' ami.json
 # for demo
-packer build -var-file='vars_demo.json' ami.json
+packer build -var-file='vars_demo.json' ami.json ##
 ```
