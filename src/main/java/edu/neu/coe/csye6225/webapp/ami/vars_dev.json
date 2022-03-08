@@ -1,6 +1,5 @@
 {
   "aws_region": "us-east-1",
   "aws_profile": "dev",
-  "source_ami": "ami-033b95fb8079dc481",
-  "security_group_id": "sg-0d49769cb4cf717ca"
+  "source_ami": "ami-033b95fb8079dc481"
 }
