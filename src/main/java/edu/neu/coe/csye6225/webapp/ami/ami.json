@@ -36,7 +36,7 @@
     },
     {
       "type": "file",
-      "source": "./target/webservice-0.0.1-SNAPSHOT.jar",
+      "source": "webservice-0.0.1-SNAPSHOT.jar",
       "destination": "~/webservice-0.0.1-SNAPSHOT.jar"
     },
     {
