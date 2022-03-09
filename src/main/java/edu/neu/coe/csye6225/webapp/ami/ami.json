@@ -35,16 +35,13 @@
       ]
     },
     {
-      "type": "shell",
-      "script": "./src/main/java/edu/neu/coe/csye6225/webapp/ami/mysql.sh"
+      "type": "file",
+      "source": "webservice-0.0.1-SNAPSHOT.jar",
+      "destination": "~/webservice-0.0.1-SNAPSHOT.jar"
     },
     {
       "type": "shell",
-      "script": "./src/main/java/edu/neu/coe/csye6225/webapp/ami/app.sh"
-    },
-    {
-      "type": "shell",
-      "script": "./src/main/java/edu/neu/coe/csye6225/webapp/ami/server.sh"
+      "script": "server.sh"
     }
   ]
 }

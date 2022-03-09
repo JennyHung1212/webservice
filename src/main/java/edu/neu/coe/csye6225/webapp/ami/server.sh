@@ -8,6 +8,7 @@ yes | sudo systemctl enable nginx
 cd /etc/systemd/system
 sudo touch app.service
 sudo chmod 766 app.service
-sudo echo -e "[Unit]\\nDescription=Spring Boot HelloWorld\\nAfter=syslog.target\\nAfter=network.target[Service]\\nUser=root\\nType=simple\\n\\n[Service]\\nExecStart=/usr/bin/java -jar /home/ec2-user/webservice-0.0.1-SNAPSHOT.jar\\nRestart=always\\nStandardOutput=syslog\\nStandardError=syslog\\nSyslogIdentifier=helloworld\\n\\n[Install]\\nWantedBy=multi-user.target" > app.service
+sudo echo -e "[Unit]\\nDescription=Spring Boot HelloWorld\\nAfter=syslog.target\\nAfter=network.target[Service]\\nUser=ec2-user\\nType=simple\\n\\n[Service]\\nExecStart=/usr/bin/java -jar /home/ec2-user/webservice-0.0.1-SNAPSHOT.jar\\nRestart=always\\nStandardOutput=syslog\\nStandardError=syslog\\nSyslogIdentifier=helloworld\\n\\n[Install]\\nWantedBy=multi-user.target" > app.service
 sudo systemctl start app
-echo $(sudo systemctl status app)
+sudo systemctl enable app
+echo $(systemctl status app)
