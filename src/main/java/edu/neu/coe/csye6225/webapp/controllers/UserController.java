@@ -3,14 +3,21 @@ package edu.neu.coe.csye6225.webapp.controllers;
 import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
 import edu.neu.coe.csye6225.webapp.models.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -31,6 +38,11 @@ public class UserController {
             System.out.println(e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/v1/user")
+    public List<User> getAllUsers() {
+        return repository.findAll();
     }
 
     @GetMapping("/v1/user/self")
@@ -55,6 +67,5 @@ public class UserController {
         } catch(Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST) ;
         }
-
     }
 }
