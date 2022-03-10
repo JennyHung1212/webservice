@@ -9,8 +9,7 @@ yes | sudo systemctl enable nginx
 cd /etc/systemd/system
 sudo touch app.service
 sudo chmod 766 app.service
-sudo echo -e "
-[Unit]
+sudo echo -e "[Unit]
 Description=Spring Boot App
 After=syslog.target
 After=network.target[Service]
