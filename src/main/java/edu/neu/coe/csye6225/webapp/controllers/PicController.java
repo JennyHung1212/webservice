@@ -36,7 +36,7 @@ public class PicController {
     @PostMapping(value="/v1/user/self/pic",
             consumes=MediaType.MULTIPART_FORM_DATA_VALUE,
             produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createProfilePic(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profilePic) {
+    public ResponseEntity<Pic> createProfilePic(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profilePic) {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
@@ -98,7 +98,7 @@ public class PicController {
 
         picRepository.save(newProfilePic);
 
-        return new ResponseEntity(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newProfilePic);
     }
 
     @GetMapping("/v1/user/self/pic")
