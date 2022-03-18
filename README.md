@@ -1,6 +1,7 @@
 # webservice
 CSYE6225 Network Structures and Cloud Computing assignment
 
+## Maven
 ### Run the project ###
 ```bash
 ./mvnw spring-boot:run
@@ -17,7 +18,7 @@ Clears the target directory and builds the project described by your Maven POM f
 ./mvnw clean install
 ```
 
-# Packer
+## Packer
 ```bash
 cd src/main/java/edu/neu/coe/csye6225/webapp/ami/
 packer validate ami.json
@@ -26,4 +27,9 @@ packer validate ami.json
 export PACKER_LOG=1 && packer build -var-file='vars_dev.json' ami.json
 # for demo
 packer build -var-file='vars_demo.json' ami.json
+```
+
+## MySQL DB
+```bash
+mysql -u csye6225 -p -h csye6225.cxrw0rct0g8f.us-east-1.rds.amazonaws.com
 ```

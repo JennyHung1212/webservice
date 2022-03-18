@@ -36,7 +36,7 @@ jobs:
     name: Build Artifact and AMI
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+#    if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v2
     - name: Set Up JDK 8
