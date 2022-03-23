@@ -36,15 +36,18 @@ public class PicController {
     @PostMapping(value="/v1/user/self/pic",
             consumes=MediaType.MULTIPART_FORM_DATA_VALUE,
             produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Pic> createProfilePic(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profilePic) {
+    public ResponseEntity createProfilePic(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profilePic) {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 
-        String fileName = profilePic.getOriginalFilename();
+        String fileName = profilePic.getOriginalFilename().replaceAll("\\s+","_");
         String contentType = profilePic.getContentType();
+        if(!contentType.equals("image/png") && !contentType.equals("image/jpeg") && !contentType.equals("image/jpg")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid file type.");
+        }
         Long size = profilePic.getSize();
         String filePath = "/home/ec2-user/" + fileName;
         String s3BucketPath = "s3://" + System.getenv("S3_BUCKET_NAME") + "/" + userId + "/";
