@@ -31,5 +31,5 @@ packer build -var-file='vars_demo.json' ami.json
 
 ## MySQL DB
 ```bash
-mysql -u csye6225 -p -h csye6225.cxrw0rct0g8f.us-east-1.rds.amazonaws.com
+mysql -u csye6225 -p -h csye6225.cakj6kkp0h27.us-east-1.rds.amazonaws.com
 ```
