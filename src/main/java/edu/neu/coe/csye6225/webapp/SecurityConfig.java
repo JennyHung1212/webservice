@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("HttpMethod.POST", "/v1/user").permitAll()
                 .antMatchers("HttpMethod.GET", "/healthz").permitAll()
+                .antMatchers("HttpMethod.GET", "/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -61,9 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder());
-//        encoders.put("scrypt", new SCryptPasswordEncoder());
-//        encoders.put("sha256", new StandardPasswordEncoder());
-//        encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
 
         DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(
                 "bcrypt", encoders);

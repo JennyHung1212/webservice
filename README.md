@@ -18,6 +18,13 @@ Clears the target directory and builds the project described by your Maven POM f
 ./mvnw clean install
 ```
 
+### Export environment variables ###
+```bash
+export S3_BUCKET_NAME=99c70780-9fd9-11ec-b5cf-12d3f012b863.dev.jenny-hung.me
+export AWS_PROFILE=dev
+export AWS_REGION=us-east-1
+```
+
 ## Packer
 ```bash
 cd src/main/java/edu/neu/coe/csye6225/webapp/ami/
