@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: ./build/webservice-0.0.1-SNAPSHOT.jar
-    destination: ~/webservice-0.0.1-SNAPSHOT.jar
+    destination: /home/ec2-user/webservice-0.0.1-SNAPSHOT.jar
 hooks:
   AfterInstall:
     - location: ./codedeploy/afterInstall.sh
