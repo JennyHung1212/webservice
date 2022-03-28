@@ -1,6 +1,10 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 name: Java CI with Maven
+env:
+  ARTIFACT_NAME: csye6225-webapp-${{ github.sha }}.zip
+  CODEDEPLOY_APPLICATION_NAME: csye6225-webapp
+  CODEDEPLOY_APPLICATION_GROUP_NAME: csye6225-webapp-deployment
 on:
   push:
   pull_request:
@@ -31,7 +35,7 @@ jobs:
       with:
         command: validate
         arguments: -syntax-only
-        target: ./src/main/java/edu/neu/coe/csye6225/webapp/ami/ami.json
+        target: ./ami/ami.json
   build:
     name: Build Artifact and AMI
     runs-on: ubuntu-latest
@@ -56,23 +60,57 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: artifact
-        path: src/main/java/edu/neu/coe/csye6225/webapp/ami/
+        path: build/
     - name: Display structure of downloaded files
       run: ls -R
+    - name: Build Deployment Artifact
+      run: |
+        mkdir codedeploy_artifact
+        zip -r ${{ env.ARTIFACT_NAME }} build/webservice-0.0.1-SNAPSHOT.jar codedeploy/*.sh appspec.yml
+        pwd
+        ls -al
+        mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
+        ls -al
+        pwd
+        cd codedeploy_artifact
+        pwd
+        ls -al
+        cd ..
+        pwd
+        ls -al
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
+    - name: Copy Artifact to S3
+      run: |
+        aws s3 sync ./codedeploy_artifact s3://${ secrets.AWS_S3_CODEDEPLOY_BUCKET }
     - name: Build AMI with Packer
       uses: hashicorp/packer-github-actions@master
       with:
         command: build
-        working_directory: "./src/main/java/edu/neu/coe/csye6225/webapp/ami/"
+        working_directory: "./ami/"
         arguments: "-var-file=vars_dev.json"
         target: ami.json
       env:
         PACKER_LOG: 1
+    - name: CodeDeploy API Call
+      run: |
+        output=$(aws deploy create-deployment \
+          --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
+          --description "CSYE6225 CodeDeploy" \
+          --s3-location bucket=${{ secrets.AWS_S3_CODEDEPLOY_BUCKET }},key=${{ env.ARTIFACT_NAME }},bundleType=zip \
+          --region ${{ secrets.AWS_REGION }} \
+          --output json)
+
+        echo $output
+
+        dId=$(echo $output | jq -r '.deploymentId')
+        aws deploy wait deployment-successful --deployment-id $dId
+
 
 

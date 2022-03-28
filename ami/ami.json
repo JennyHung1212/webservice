@@ -37,12 +37,16 @@
     },
     {
       "type": "file",
-      "source": "webservice-0.0.1-SNAPSHOT.jar",
+      "source": "../build/webservice-0.0.1-SNAPSHOT.jar",
       "destination": "~/webservice-0.0.1-SNAPSHOT.jar"
     },
     {
       "type": "shell",
       "script": "server.sh"
+    },
+    {
+      "type": "shell",
+      "script": "codedeploy.sh"
     }
   ]
 }
