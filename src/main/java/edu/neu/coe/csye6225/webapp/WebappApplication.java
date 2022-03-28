@@ -16,7 +16,7 @@ public class WebappApplication {
 		SpringApplication.run(WebappApplication.class, args);
 	}
 
-	@GetMapping(value = {"/healthz", "/"})
+	@GetMapping(value = {"/health", "/"})
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity health() {
 		return ResponseEntity.ok().build();
