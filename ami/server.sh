@@ -1,3 +1,4 @@
+#!/bin/bash
 sudo chmod +x webservice-0.0.1-SNAPSHOT.jar
 sudo wget http://nginx.org/keys/nginx_signing.key
 sudo amazon-linux-extras enable epel
