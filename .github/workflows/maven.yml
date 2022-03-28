@@ -35,7 +35,7 @@ jobs:
       with:
         command: validate
         arguments: -syntax-only
-        target: ./src/main/java/edu/neu/coe/csye6225/webapp/ami/ami.json
+        target: ./ami/ami.json
   build:
     name: Build Artifact and AMI
     runs-on: ubuntu-latest
