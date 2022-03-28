@@ -96,7 +96,7 @@ jobs:
         target: ami.json
       env:
         PACKER_LOG: 1
-    - nam: CodeDeploy API Call
+    - name: CodeDeploy API Call
       run: |
         output=$(aws deploy create-deployment \
           --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
