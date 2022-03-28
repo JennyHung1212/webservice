@@ -5,7 +5,7 @@ files:
     destination: ~/webservice-0.0.1-SNAPSHOT.jar
 hooks:
   AfterInstall:
-    - locatoin: ./codedeploy/afterInstall.sh
+    - location: ./codedeploy/afterInstall.sh
       timeout: 180
       runas: ec2-user
   ApplicationStart:
