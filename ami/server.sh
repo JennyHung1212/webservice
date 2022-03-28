@@ -16,10 +16,13 @@ After=syslog.target
 After=network.target[Service]
 User=ec2-user
 Type=simple
+StartLimitIntervalSec=400
+StartLimitBurst=10
 
 [Service]
 ExecStart=/usr/bin/java -jar /home/ec2-user/webservice-0.0.1-SNAPSHOT.jar
 Restart=always
+RestartSec=5
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=webservice
