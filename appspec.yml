@@ -3,6 +3,8 @@ os: linux
 files:
   - source: ./build/webservice-0.0.1-SNAPSHOT.jar
     destination: /home/ec2-user/
+  - source: ./cloudwatch-config.json
+    destination: /opt/
 hooks:
   AfterInstall:
     - location: ./codedeploy/afterInstall.sh

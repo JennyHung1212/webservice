@@ -32,13 +32,21 @@
       "inline": [
         "sudo yum update -y",
         "sudo yum install -y java-1.8.0-openjdk.x86_64",
-        "yes | sudo yum install mysql"
+        "yes | sudo yum install mysql",
+        "yes | sudo yum install amazon-cloudwatch-agent",
+        "cd /var/log && sudo touch webservice.log",
+        "sudo chmod 666 webservice.log"
       ]
     },
     {
       "type": "file",
       "source": "../build/webservice-0.0.1-SNAPSHOT.jar",
       "destination": "~/webservice-0.0.1-SNAPSHOT.jar"
+    },
+    {
+      "type": "file",
+      "source": "../cloudwatch-config.json",
+      "destination": "/opt/cloudwatch-config.json"
     },
     {
       "type": "shell",
