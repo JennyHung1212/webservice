@@ -46,7 +46,7 @@
     {
       "type": "file",
       "source": "../cloudwatch-config.json",
-      "destination": "/opt/cloudwatch-config.json"
+      "destination": "~/cloudwatch-config.json"
     },
     {
       "type": "shell",
