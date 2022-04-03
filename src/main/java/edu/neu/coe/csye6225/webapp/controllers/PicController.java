@@ -1,29 +1,29 @@
 package edu.neu.coe.csye6225.webapp.controllers;
 
+import com.timgroup.statsd.StatsDClient;
 import edu.neu.coe.csye6225.webapp.models.Pic;
 import edu.neu.coe.csye6225.webapp.models.User;
 import edu.neu.coe.csye6225.webapp.repositories.PicRepository;
 import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.lang.reflect.Executable;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.List;
 
 @RestController
 public class PicController {
+    @Autowired
+    private StatsDClient statsDClient;
+
     private final PicRepository picRepository;
     private final UserRepository userRepository;
 
@@ -37,6 +37,8 @@ public class PicController {
             consumes=MediaType.MULTIPART_FORM_DATA_VALUE,
             produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createProfilePic(@RequestHeader("Authorization") String token, @RequestParam MultipartFile profilePic) {
+        statsDClient.incrementCounter("endpoint.pic.http.post");
+
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
@@ -106,6 +108,8 @@ public class PicController {
 
     @GetMapping("/v1/user/self/pic")
     public ResponseEntity<Pic> getProfilePic(@RequestHeader("Authorization") String token) {
+        statsDClient.incrementCounter("endpoint.pic.http.get");
+
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
@@ -123,6 +127,8 @@ public class PicController {
 
     @DeleteMapping("/v1/user/self/pic")
     public ResponseEntity deleteProfilePic(@RequestHeader("Authorization") String token) {
+        statsDClient.incrementCounter("endpoint.pic.http.delete");
+
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
