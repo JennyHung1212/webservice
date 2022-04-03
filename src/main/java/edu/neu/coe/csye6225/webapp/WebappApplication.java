@@ -1,5 +1,7 @@
 package edu.neu.coe.csye6225.webapp;
 
+import com.timgroup.statsd.StatsDClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class WebappApplication {
+	@Autowired
+	private StatsDClient statsDClient;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebappApplication.class, args);
@@ -19,6 +23,7 @@ public class WebappApplication {
 	@GetMapping(value = {"/healthz", "/"})
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity health() {
+		statsDClient.incrementCounter("endpoint.home.http.get");
 		return ResponseEntity.ok().build();
 	}
 }
