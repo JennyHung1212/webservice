@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MetricsClientBean {
-
     @Value("${publish.metrics}")
     private boolean publishMetrics;
 

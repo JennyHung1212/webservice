@@ -6,6 +6,7 @@ import edu.neu.coe.csye6225.webapp.models.User;
 import edu.neu.coe.csye6225.webapp.repositories.PicRepository;
 import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class PicController {
     private final UserRepository userRepository;
 
 
-    public PicController(PicRepository picRepository, UserRepository userRepository) {
+    public PicController(@Qualifier("pic") PicRepository picRepository, @Qualifier("user") UserRepository userRepository) {
         this.picRepository = picRepository;
         this.userRepository = userRepository;
     }

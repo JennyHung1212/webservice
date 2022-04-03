@@ -4,6 +4,7 @@ import com.timgroup.statsd.StatsDClient;
 import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
 import edu.neu.coe.csye6225.webapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +24,7 @@ public class UserController {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserController(@Qualifier("user") UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -43,7 +44,7 @@ public class UserController {
 
     @GetMapping("/v1/user")
     public List<User> getAllUsers() {
-        statsDClient.incrementCounter("endpoint.user.http.get");
+//        statsDClient.incrementCounter("endpoint.user.http.get");
         return repository.findAll();
     }
 
