@@ -22,7 +22,7 @@ public class WebappApplication {
 		SpringApplication.run(WebappApplication.class, args);
 	}
 
-	@GetMapping(value = {"/healthzzzzz", "/"})
+	@GetMapping(value = {"/healthz", "/"})
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity health() {
 		statsDClient.incrementCounter("endpoint.home.http.get");
