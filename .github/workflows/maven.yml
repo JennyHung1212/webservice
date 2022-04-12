@@ -51,22 +51,22 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package -DskipTests --file pom.xml
-    - name: Upload JAR
-      uses: actions/upload-artifact@v2
-      with:
-        name: artifact
-        path: target/webservice-0.0.1-SNAPSHOT.jar
-    - name: Download JAR
-      uses: actions/download-artifact@v2
-      with:
-        name: artifact
-        path: build/
+#    - name: Upload JAR
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: artifact
+#        path: target/webservice-0.0.1-SNAPSHOT.jar
+#    - name: Download JAR
+#      uses: actions/download-artifact@v2
+#      with:
+#        name: artifact
+#        path: build/
     - name: Display structure of downloaded files
       run: ls -R
     - name: Build Deployment Artifact
       run: |
         mkdir codedeploy_artifact
-        zip -r ${{ env.ARTIFACT_NAME }} build/webservice-0.0.1-SNAPSHOT.jar codedeploy/*.sh appspec.yml cloudwatch-config.json
+        zip -r ${{ env.ARTIFACT_NAME }} target/webservice-0.0.1-SNAPSHOT.jar codedeploy/*.sh appspec.yml cloudwatch-config.json
         pwd
         ls -al
         mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
