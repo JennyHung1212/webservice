@@ -29,7 +29,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/v1/user")
+    @PostMapping("/v2/user")
     public ResponseEntity createUser(@Valid @RequestBody User user) {
         statsDClient.incrementCounter("endpoint.user.http.post");
 
