@@ -11,31 +11,31 @@ on:
     branches:
       - main
 jobs:
-  test:
-    name: Unit Tests & Validate Packer
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set Up JDK 8
-      uses: actions/setup-java@v2
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-        cache: maven
-    - name: Cache Maven Packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    - name: Run Tests with Maven
-      run: mvn -B test --file pom.xml
-    - name: Validate Packer Template
-      uses: hashicorp/packer-github-actions@master
-      with:
-        command: validate
-        arguments: -syntax-only
-        target: ./ami/ami.json
+#  test:
+#    name: Unit Tests & Validate Packer
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Set Up JDK 8
+#      uses: actions/setup-java@v2
+#      with:
+#        java-version: '8'
+#        distribution: 'temurin'
+#        cache: maven
+#    - name: Cache Maven Packages
+#      uses: actions/cache@v2
+#      with:
+#        path: ~/.m2
+#        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+#        restore-keys: ${{ runner.os }}-m2
+#    - name: Run Tests with Maven
+#      run: mvn -B test --file pom.xml
+#    - name: Validate Packer Template
+#      uses: hashicorp/packer-github-actions@master
+#      with:
+#        command: validate
+#        arguments: -syntax-only
+#        target: ./ami/ami.json
   build:
     name: Build Artifact and AMI
     runs-on: ubuntu-latest
@@ -65,8 +65,9 @@ jobs:
       run: ls -R
     - name: Build Deployment Artifact
       run: |
+        mv target/webservice-0.0.1-SNAPSHOT.jar build/webservice-0.0.1-SNAPSHOT.jar
         mkdir codedeploy_artifact
-        zip -r ${{ env.ARTIFACT_NAME }} target/webservice-0.0.1-SNAPSHOT.jar codedeploy/*.sh appspec.yml cloudwatch-config.json
+        zip -r ${{ env.ARTIFACT_NAME }} build/webservice-0.0.1-SNAPSHOT.jar codedeploy/*.sh appspec.yml cloudwatch-config.json
         pwd
         ls -al
         mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
