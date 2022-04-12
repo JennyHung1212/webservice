@@ -81,15 +81,15 @@ jobs:
     - name: Copy Artifact to S3
       run: |
         aws s3 sync ./codedeploy_artifact s3://${{ secrets.AWS_S3_CODEDEPLOY_BUCKET }}
-    - name: Build AMI with Packer
-      uses: hashicorp/packer-github-actions@master
-      with:
-        command: build
-        working_directory: "./ami/"
-        arguments: "-var-file=vars_dev.json"
-        target: ami.json
-      env:
-        PACKER_LOG: 1
+#    - name: Build AMI with Packer
+#      uses: hashicorp/packer-github-actions@master
+#      with:
+#        command: build
+#        working_directory: "./ami/"
+#        arguments: "-var-file=vars_dev.json"
+#        target: ami.json
+#      env:
+#        PACKER_LOG: 1
     - name: CodeDeploy API Call
       run: |
         output=$(aws deploy create-deployment \
