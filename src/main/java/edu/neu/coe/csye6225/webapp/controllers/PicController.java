@@ -3,6 +3,7 @@ package edu.neu.coe.csye6225.webapp.controllers;
 import com.timgroup.statsd.StatsDClient;
 import edu.neu.coe.csye6225.webapp.models.Pic;
 import edu.neu.coe.csye6225.webapp.models.User;
+import edu.neu.coe.csye6225.webapp.utils.CmdRunner;
 import edu.neu.coe.csye6225.webapp.repositories.PicRepository;
 import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
@@ -43,6 +42,11 @@ public class PicController {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
+        if(userRepository.findByUsername(username).getVerified() == null
+                || !userRepository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 
@@ -60,32 +64,17 @@ public class PicController {
             Process p;
             if(picRepository.findByUserId(userId) != null) {
                 cmd = "aws s3 rm " + s3BucketPath + " --recursive";
-                p = Runtime.getRuntime().exec(cmd);
-
-                p.waitFor();
-                BufferedReader stdError = new BufferedReader(new
-                        InputStreamReader(p.getErrorStream()));
-                String s = null;
-                while ((s = stdError.readLine()) != null) {
-                    System.out.println(s);
-                    throw new Exception(s);
-                }
+                CmdRunner.run(cmd);
             }
 
             File file = new File(filePath);
             profilePic.transferTo(file);
             cmd = "aws s3 cp " + filePath + " " + s3BucketPath;
-            p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String s = null;
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
-                throw new Exception(s);
-            }
+            CmdRunner.run(cmd);
+
             file.delete();
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
@@ -114,6 +103,11 @@ public class PicController {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
+        if(userRepository.findByUsername(username).getVerified() == null
+                || !userRepository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 
@@ -133,6 +127,11 @@ public class PicController {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
+        if(userRepository.findByUsername(username).getVerified() == null
+                || !userRepository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 
@@ -143,27 +142,16 @@ public class PicController {
 
         String id = pic.getId();
         String url = pic.getUrl();
-        String fileName = pic.getFileName();
         int i = url.lastIndexOf('/');
         String s3Bucket = url.substring(0, i);
         System.out.println(s3Bucket);
 
-
-
         try {
             picRepository.deleteById(id);
             String cmd = "aws s3 rm " + s3Bucket + " --recursive";
-            Process p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
-            BufferedReader stdError = new BufferedReader(new
-                    InputStreamReader(p.getErrorStream()));
-
-            String s = null;
-            while ((s = stdError.readLine()) != null) {
-                throw new Exception(s);
-            }
+            CmdRunner.run(cmd);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
