@@ -1,15 +1,17 @@
 package edu.neu.coe.csye6225.webapp.controllers;
 
 import com.timgroup.statsd.StatsDClient;
-import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
 import edu.neu.coe.csye6225.webapp.models.User;
+import edu.neu.coe.csye6225.webapp.repositories.UserRepository;
+import edu.neu.coe.csye6225.webapp.utils.CmdRunner;
+import edu.neu.coe.csye6225.webapp.utils.TokenGenerator;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
@@ -29,14 +31,30 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/v2/user")
+    @PostMapping("/v1/user")
     public ResponseEntity createUser(@Valid @RequestBody User user) {
         statsDClient.incrementCounter("endpoint.user.http.post");
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        String cmd;
         try {
+            String token = TokenGenerator.token();
+            String msg = String.format("{\"default\":\"default\",\"email\":\"%s\",\"token\":\"%s\"}", user.getUsername(), token);
+            String item = String.format("{\"Email\":{\"S\":\"%s\"},\"Token\":{\"S\":\"%s\"}}", user.getUsername(), token);
+
+            cmd = "aws dynamodb put-item " +
+                    "--table-name csye6225_webapp " +
+                    "--item " + item;
+            CmdRunner.run(cmd);
+
+            cmd = "aws sns publish " +
+                    "--topic-arn arn:aws:sns:us-east-1:567984459938:csye6225-webapp-email-verification " +
+                    "--message " + msg;
+            CmdRunner.run(cmd);
+
             return new ResponseEntity<User>(repository.save(user), HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException e) {
+        } catch (Exception e) {
             System.out.println(e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -44,7 +62,7 @@ public class UserController {
 
     @GetMapping("/v1/user")
     public List<User> getAllUsers() {
-//        statsDClient.incrementCounter("endpoint.user.http.get");
+        statsDClient.incrementCounter("endpoint.user.http.get");
         return repository.findAll();
     }
 
@@ -74,5 +92,34 @@ public class UserController {
         } catch(Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST) ;
         }
+    }
+
+    @GetMapping("/v1/verifyUserEmail")
+    public ResponseEntity verifyUserEmail(@RequestParam("email") String email, @RequestParam("token") String token) {
+        statsDClient.incrementCounter("endpoint.verify.http.get");
+
+        String key = String.format("{\"Email\":{\"S\":\"%s\"}}", email);
+        String cmd = "aws dynamodb get-item --consistent-read " +
+                "--table-name csye6225_webapp " +
+                "--key " + key;
+        try {
+            String output = CmdRunner.run(cmd);
+            JSONObject obj = new JSONObject(output);
+            String t = obj.getJSONObject("Item").getJSONObject("Token").getString("S");
+
+            if (t.equals(token)) {
+                User user = repository.findByUsername(email);
+                user.setVerified(true);
+
+                return new ResponseEntity("Verify email successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Failed to verify email.", HttpStatus.UNAUTHORIZED);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

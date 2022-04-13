@@ -46,6 +46,12 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String accountUpdated;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Boolean verified = false;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String verifiedOn;
+
     public User() {
         final String now = Instant.now().toString();
         this.accountCreated = now;
@@ -61,6 +67,8 @@ public class User {
         final String now = Instant.now().toString();
         this.accountCreated = now;
         this.accountUpdated = now;
+
+        this.verified = false;
     }
 
     public String getId() {
@@ -117,5 +125,21 @@ public class User {
         setLastName(lastName);
         setPassword(password);
         setAccountUpdated(now);
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public String getVerifiedOn() {
+        return verifiedOn;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
+    public void setVerifiedOn(String verifiedOn) {
+        this.verifiedOn = verifiedOn;
     }
 }
