@@ -42,6 +42,11 @@ public class PicController {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
+        if(userRepository.findByUsername(username).getVerified() == null
+                || !userRepository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 
@@ -98,6 +103,11 @@ public class PicController {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
+        if(userRepository.findByUsername(username).getVerified() == null
+                || !userRepository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 
@@ -117,6 +127,11 @@ public class PicController {
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
+        if(userRepository.findByUsername(username).getVerified() == null
+                || !userRepository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         User user = userRepository.findByUsername(username);
         String userId = user.getId();
 

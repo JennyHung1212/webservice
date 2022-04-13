@@ -67,13 +67,18 @@ public class UserController {
     }
 
     @GetMapping("/v1/user/self")
-    public User getSelf(@RequestHeader("Authorization") String token) {
+    public ResponseEntity getSelf(@RequestHeader("Authorization") String token) {
         statsDClient.incrementCounter("endpoint.user.self.http.get");
 
         String base64Credentials = token.substring("Basic".length()).trim();
         String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
         String username = credentials.split(":")[0];
-        return repository.findByUsername(username);
+
+        if(repository.findByUsername(username).getVerified() == null
+                || !repository.findByUsername(username).getVerified()) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<User>(repository.findByUsername(username), HttpStatus.OK);
     }
 
     @PutMapping("/v1/user/self")
@@ -84,13 +89,18 @@ public class UserController {
             String base64Credentials = token.substring("Basic".length()).trim();
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
             String username = credentials.split(":")[0];
+            if(repository.findByUsername(username).getVerified() == null
+                    || !repository.findByUsername(username).getVerified()) {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+
             User updatedUser = repository.findByUsername(username);
 
             updatedUser.updateUser(user.getFirstName(), user.getLastName(), passwordEncoder.encode(user.getPassword()));
             repository.save(updatedUser);
-            return new ResponseEntity(HttpStatus.NO_CONTENT) ;
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch(Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST) ;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -110,6 +120,7 @@ public class UserController {
             if (t.equals(token)) {
                 User user = repository.findByUsername(email);
                 user.setVerified(true);
+                repository.save(user);
 
                 return new ResponseEntity("Verify email successfully!", HttpStatus.OK);
             } else {
