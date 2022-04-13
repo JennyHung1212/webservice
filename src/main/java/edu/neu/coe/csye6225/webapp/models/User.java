@@ -137,6 +137,10 @@ public class User {
 
     public void setVerified(Boolean verified) {
         this.verified = verified;
+        if(verified == true) {
+            final String now = Instant.now().toString();
+            this.verifiedOn = now;
+        }
     }
 
     public void setVerifiedOn(String verifiedOn) {
