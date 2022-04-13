@@ -45,12 +45,14 @@ public class UserController {
 
             cmd = "aws dynamodb put-item " +
                     "--table-name csye6225_webapp " +
-                    "--item " + item;
+                    "--item " + item +
+                    " --region us-east-1";
             CmdRunner.run(cmd);
 
             cmd = "aws sns publish " +
                     "--topic-arn arn:aws:sns:us-east-1:567984459938:csye6225-webapp-email-verification " +
-                    "--message " + msg;
+                    "--message " + msg +
+                    " --region us-east-1";
             CmdRunner.run(cmd);
 
             return new ResponseEntity<User>(repository.save(user), HttpStatus.CREATED);
@@ -111,7 +113,8 @@ public class UserController {
         String key = String.format("{\"Email\":{\"S\":\"%s\"}}", email);
         String cmd = "aws dynamodb get-item --consistent-read " +
                 "--table-name csye6225_webapp " +
-                "--key " + key;
+                "--key " + key +
+                " --region us-east-1";
         try {
             String output = CmdRunner.run(cmd);
             JSONObject obj = new JSONObject(output);
