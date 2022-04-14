@@ -44,7 +44,7 @@ public class UserController {
             String msg = String.format("{\"default\":\"default\",\"email\":\"%s\",\"token\":\"%s\"}", user.getUsername(), token);
             long unixTime = Instant.now().getEpochSecond();
             long expireTime = unixTime + 300L;
-            String item = String.format("{\"Email\":{\"S\":\"%s\"},\"Token\":{\"S\":\"%s\"}, \"ExpireTime\":{\"N\":\"%s\"}}", user.getUsername(), token, expireTime);
+            String item = String.format("{\"Email\":{\"S\":\"%s\"},\"Token\":{\"S\":\"%s\"},\"ExpireTime\":{\"N\":\"%s\"}}", user.getUsername(), token, expireTime);
 
             cmd = "aws dynamodb put-item " +
                     "--table-name csye6225_webapp " +
@@ -109,6 +109,22 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/v1/user/self")
+    public ResponseEntity deleteSelf(@RequestHeader("Authorization") String token) {
+        statsDClient.incrementCounter("endpoint.user.self.http.delete");
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
+        String username = credentials.split(":")[0];
+
+        try {
+            repository.deleteByUsername(username);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
     @GetMapping("/v1/verifyUserEmail")
     public ResponseEntity verifyUserEmail(@RequestParam("email") String email, @RequestParam("token") String token) {
         statsDClient.incrementCounter("endpoint.verify.http.get");
