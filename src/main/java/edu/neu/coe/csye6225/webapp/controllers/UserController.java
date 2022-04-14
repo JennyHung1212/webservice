@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 
@@ -41,7 +42,9 @@ public class UserController {
         try {
             String token = TokenGenerator.token();
             String msg = String.format("{\"default\":\"default\",\"email\":\"%s\",\"token\":\"%s\"}", user.getUsername(), token);
-            String item = String.format("{\"Email\":{\"S\":\"%s\"},\"Token\":{\"S\":\"%s\"}}", user.getUsername(), token);
+            long unixTime = Instant.now().getEpochSecond();
+            long expireTime = unixTime + 300L;
+            String item = String.format("{\"Email\":{\"S\":\"%s\"},\"Token\":{\"S\":\"%s\"}, \"ExpireTime\":{\"N\":\"%s\"}}", user.getUsername(), token, expireTime);
 
             cmd = "aws dynamodb put-item " +
                     "--table-name csye6225_webapp " +
